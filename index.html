@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<head>
+  <title>interest-calculator</title>
+</head>
+<body>
+  <input type="text" name="Deposited" id="deposited-input">
+  <input type="text" name="Interest" id="interest-input"><p>%</p>  
+  <label for="compound-input">Compound Rate:</label>
+  <select name="Compound Rate" id="compound-input">
+    <option value="continuous">Continuously compounded</option>
+    <option value="daily">Compounded daily</option>
+    <option value="monthly">Compounded monthly</option>
+    <option value="yearly">Compounded yearly</option>
+  </select>
+  <input type="text" name="Time period" id="time-input"><p>Years, months, days, etc</p>
+
+  <button id="calculate">Calculate interest</button>
+  <p>Result:<p><p id="result-text"></p>
+
+  <script>
+    var calc = document.getElementById("calculate");
+    var result = document.getElementById("result-text");
+    var resultInterest = 0;
+
+    calc.addEventListener("click", function() {
+      var deposited = parseFloat(document.getElementById("deposited-input").value);
+      var interest = parseFloat(document.getElementById("interest-input").value) / 100;
+      var compound = document.getElementById("compound-input").value;
+      var time = parseFloat(document.getElementById("time-input").value);
+
+      if (compound === "continuous") {
+        resultInterest = deposited * (Math.E)**(interest*time);
+      }
+
+      if (compound === "daily") {
+        resultInterest = deposited * (1 + interest/365)**(365*time);
+      }
+
+      if (compound === "monthly") {
+        resultInterest = deposited * (1 + (interest/12))**(12*time);
+      }
+
+      if (compound === "yearly") {
+        resultInterest = deposited * (1 + interest)**time;
+      }
+
+      result.innerHTML = resultInterest;
+    });
+  </script>
+</body>
+</html>
