@@ -3,8 +3,10 @@
   <title>interest-calculator</title>
 </head>
 <body>
-  <input type="text" name="Deposited" id="deposited-input">
-  <input type="text" name="Interest" id="interest-input"><p>%</p>  
+  <p>Deposited:</p><input type="text" name="Deposited" id="deposited-input">
+  <br>
+  <p>Interest rate:</p><input type="text" name="Interest" id="interest-input"><p>%</p>  
+  <br>
   <label for="compound-input">Compound Rate:</label>
   <select name="Compound Rate" id="compound-input">
     <option value="continuous">Continuously compounded</option>
@@ -12,7 +14,8 @@
     <option value="monthly">Compounded monthly</option>
     <option value="yearly">Compounded yearly</option>
   </select>
-  <input type="text" name="Time period" id="time-input"><p>Years, months, days, etc</p>
+  <br>
+  <p>Years:</p><input type="text" name="Time period" id="time-input">
 
   <button id="calculate">Calculate interest</button>
   <p>Result:<p><p id="result-text"></p>
