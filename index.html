@@ -9,7 +9,7 @@
     }  
     /* This adds a little space between the label and the input */
     label {
-      margin-right: 10px;
+      margin-right: 14px;
       display: inline-block;
       min-width: 110px;
     }
@@ -31,17 +31,17 @@
 
   <div class="input-group">
     <label for="deposited-input">Deposited:</label>
-    <input type="text" name="Deposited" id="deposited-input">
+    <p>$</p><input type="text" placeholder="2500" id="deposited-input">
   </div>
 
   <div class="input-group">
     <label for="interest-input">Interest rate:</label>
-    <input type="text" name="Interest" id="interest-input"><span>%</span>
+    <input type="text" placeholder="2.75" id="interest-input"><span> %</span>
   </div>
 
   <div class="input-group">
-    <label for="compound-input">Compound Rate:</label>
-    <select name="Compound Rate" id="compound-input">
+    <label for="compound-input">Compound rate:</label>
+    <select id="compound-input">
       <option value="continuous">Continuously compounded</option>
       <option value="daily">Compounded daily</option>
       <option value="monthly">Compounded monthly</option>
@@ -51,7 +51,7 @@
 
   <div class="input-group">
     <label for="time-input">Years:</label>
-    <input type="text" name="Time period" id="time-input">
+    <input type="text" placeholder="4" id="time-input">
   </div>
 
   <button id="calculate">Calculate interest</button>
