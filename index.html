@@ -1,53 +1,79 @@
 <!DOCTYPE html>
+<html>
 <head>
   <title>interest-calculator</title>
+  <style>
+    /* This adds a little space between the label and the input */
+    label {
+      margin-right: 10px;
+      display: inline-block;
+      min-width: 110px;
+    }
+    .input-group {
+      margin-bottom: 15px
+    }
+  </style>
 </head>
 <body>
-  <p>Deposited:</p><input type="text" name="Deposited" id="deposited-input">
-  <br>
-  <p>Interest rate:</p><input type="text" name="Interest" id="interest-input"><p>%</p>  
-  <br>
-  <label for="compound-input">Compound Rate:</label>
-  <select name="Compound Rate" id="compound-input">
-    <option value="continuous">Continuously compounded</option>
-    <option value="daily">Compounded daily</option>
-    <option value="monthly">Compounded monthly</option>
-    <option value="yearly">Compounded yearly</option>
-  </select>
-  <br>
-  <p>Years:</p><input type="text" name="Time period" id="time-input">
+
+  <div class="input-group">
+    <label for="deposited-input">Deposited:</label>
+    <input type="text" name="Deposited" id="deposited-input">
+  </div>
+
+  <div class="input-group">
+    <label for="interest-input">Interest rate:</label>
+    <input type="text" name="Interest" id="interest-input"><span>%</span>
+  </div>
+
+  <div class="input-group">
+    <label for="compound-input">Compound Rate:</label>
+    <select name="Compound Rate" id="compound-input">
+      <option value="continuous">Continuously compounded</option>
+      <option value="daily">Compounded daily</option>
+      <option value="monthly">Compounded monthly</option>
+      <option value="yearly">Compounded yearly</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label for="time-input">Years:</label>
+    <input type="text" name="Time period" id="time-input">
+  </div>
 
   <button id="calculate">Calculate interest</button>
-  <p>Result:<p><p id="result-text"></p>
+  
+  <p><strong>Result:</strong> <span id="result-text"></span></p>
 
   <script>
     var calc = document.getElementById("calculate");
     var result = document.getElementById("result-text");
-    var resultInterest = 0;
 
     calc.addEventListener("click", function() {
       var deposited = parseFloat(document.getElementById("deposited-input").value);
       var interest = parseFloat(document.getElementById("interest-input").value) / 100;
       var compound = document.getElementById("compound-input").value;
       var time = parseFloat(document.getElementById("time-input").value);
+      var resultInterest = 0;
+
+      // stop script from calculating not-numbers
+      if (isNaN(deposited) || isNaN(interest) || isNaN(time)) {
+          result.innerHTML = "Please enter valid numbers";
+          return;
+      }
 
       if (compound === "continuous") {
-        resultInterest = deposited * (Math.E)**(interest*time);
+        resultInterest = deposited * Math.exp(interest * time);
+      } else if (compound === "daily") {
+        resultInterest = deposited * Math.pow((1 + interest / 365), (365 * time));
+      } else if (compound === "monthly") {
+        resultInterest = deposited * Math.pow((1 + interest / 12), (12 * time));
+      } else if (compound === "yearly") {
+        resultInterest = deposited * Math.pow((1 + interest), time);
       }
 
-      if (compound === "daily") {
-        resultInterest = deposited * (1 + interest/365)**(365*time);
-      }
-
-      if (compound === "monthly") {
-        resultInterest = deposited * (1 + (interest/12))**(12*time);
-      }
-
-      if (compound === "yearly") {
-        resultInterest = deposited * (1 + interest)**time;
-      }
-
-      result.innerHTML = resultInterest;
+      // toFixed(2) makes it look like currency (100.50)
+      result.innerHTML = "$" + resultInterest.toFixed(2);
     });
   </script>
 </body>
