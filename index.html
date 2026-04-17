@@ -44,10 +44,13 @@
   <button id="calculate">Calculate interest</button>
   
   <p><strong>Result:</strong> <span id="result-text"></span></p>
+  
+  <p><strong>Equation:</strong> <span id="equation-text"></span></p>
 
   <script>
     var calc = document.getElementById("calculate");
     var result = document.getElementById("result-text");
+    var equation = document.getElementById("equation-text");
 
     calc.addEventListener("click", function() {
       var deposited = parseFloat(document.getElementById("deposited-input").value);
@@ -55,7 +58,8 @@
       var compound = document.getElementById("compound-input").value;
       var time = parseFloat(document.getElementById("time-input").value);
       var resultInterest = 0;
-
+      var resultEquation = "";
+      
       // stop script from calculating not-numbers
       if (isNaN(deposited) || isNaN(interest) || isNaN(time)) {
           result.innerHTML = "Please enter valid numbers";
@@ -64,16 +68,22 @@
 
       if (compound === "continuous") {
         resultInterest = deposited * Math.exp(interest * time);
+        resultEquation = `${deposited}e^(${interest}*${time})`;
       } else if (compound === "daily") {
         resultInterest = deposited * Math.pow((1 + interest / 365), (365 * time));
+        resultEquation = `${deposited}(1 + ${interest}/365)^(365*${time})`;
       } else if (compound === "monthly") {
         resultInterest = deposited * Math.pow((1 + interest / 12), (12 * time));
+        resultEquation = `${deposited}(1 + ${interest}/12)^(12*${time})`;
       } else if (compound === "yearly") {
         resultInterest = deposited * Math.pow((1 + interest), time);
+        resultEquation = `${deposited}(1 + ${interest})^${time}`;
       }
 
       // toFixed(2) makes it look like currency (100.50)
       result.innerHTML = "$" + resultInterest.toFixed(2);
+
+      equation.innerHTML = resultEquation;
     });
   </script>
 </body>
