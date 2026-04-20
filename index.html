@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interest Calculator</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
   <style>
     /* Reset & Base Styles */
     * { box-sizing: border-box; }
@@ -19,14 +22,13 @@
       color: #333;
     }
 
-    /* Card Container */
     .calculator-card {
       background: white;
       padding: 2rem;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 450px; /* Widened slightly for equations */
     }
 
     h2 {
@@ -48,7 +50,6 @@
       font-size: 0.9rem;
     }
 
-    /* Input Wrapper for $ and % symbols */
     .field-wrapper {
       display: flex;
       align-items: center;
@@ -62,11 +63,6 @@
       border-color: #3498db;
     }
 
-    .field-wrapper span {
-      color: #777;
-      font-weight: bold;
-    }
-
     input, select {
       border: none;
       outline: none;
@@ -76,7 +72,6 @@
       background: transparent;
     }
 
-    /* Button Styling */
     button {
       width: 100%;
       background-color: #3498db;
@@ -95,7 +90,6 @@
       background-color: #2980b9;
     }
 
-    /* Results Area */
     .results-container {
       margin-top: 25px;
       padding-top: 20px;
@@ -103,7 +97,7 @@
     }
 
     .result-row {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       font-size: 1rem;
     }
 
@@ -113,15 +107,15 @@
       font-size: 1.2rem;
     }
 
+    /* Styling for the math container */
     #equation-text {
       display: block;
       background: #f9f9f9;
-      padding: 8px;
-      font-family: monospace;
-      font-size: 0.85rem;
-      word-break: break-all;
+      padding: 15px;
       border-radius: 4px;
-      margin-top: 5px;
+      margin-top: 8px;
+      min-height: 50px;
+      overflow-x: auto; /* Scroll if equation is too long */
     }
   </style>
 </head>
@@ -173,7 +167,7 @@
     </div>
     <div class="result-row">
       <strong>Equation:</strong> 
-      <span id="equation-text">Waiting for input...</span>
+      <div id="equation-text">$$A = P \cdot e^{rt}$$</div>
     </div>
   </div>
 </div>
@@ -185,35 +179,45 @@
 
   calc.addEventListener("click", function() {
     const deposited = parseFloat(document.getElementById("deposited-input").value);
-    const interest = parseFloat(document.getElementById("interest-input").value) / 100;
+    const r = parseFloat(document.getElementById("interest-input").value) / 100;
     const compound = document.getElementById("compound-input").value;
-    const time = parseFloat(document.getElementById("time-input").value);
+    const t = parseFloat(document.getElementById("time-input").value);
     
     let resultInterest = 0;
-    let resultEquation = "";
+    let latexEquation = "";
     
-    if (isNaN(deposited) || isNaN(interest) || isNaN(time)) {
+    if (isNaN(deposited) || isNaN(r) || isNaN(t)) {
         result.innerHTML = "Error";
         equation.innerHTML = "Please enter valid numbers.";
         return;
     }
 
     if (compound === "continuous") {
-      resultInterest = deposited * Math.exp(interest * time);
-      resultEquation = `${deposited} * e^(${interest} * ${time})`;
+      resultInterest = deposited * Math.exp(r * t);
+      // LaTeX for e^(rt)
+      latexEquation = `$$${deposited} \\cdot e^{${r} \\cdot ${t}}$$`;
     } else if (compound === "daily") {
-      resultInterest = deposited * Math.pow((1 + interest / 365), (365 * time));
-      resultEquation = `${deposited} * (1 + ${interest}/365)^(365 * ${time})`;
+      const n = 365;
+      resultInterest = deposited * Math.pow((1 + r / n), (n * t));
+      // LaTeX for fractions and exponents
+      latexEquation = `$$${deposited} \\left(1 + \\frac{${r}}{${n}}\\right)^{${n} \\cdot ${t}}$$`;
     } else if (compound === "monthly") {
-      resultInterest = deposited * Math.pow((1 + interest / 12), (12 * time));
-      resultEquation = `${deposited} * (1 + ${interest}/12)^(12 * ${time})`;
+      const n = 12;
+      resultInterest = deposited * Math.pow((1 + r / n), (n * t));
+      latexEquation = `$$${deposited} \\left(1 + \\frac{${r}}{${n}}\\right)^{${n} \\cdot ${t}}$$`;
     } else if (compound === "yearly") {
-      resultInterest = deposited * Math.pow((1 + interest), time);
-      resultEquation = `${deposited} * (1 + ${interest})^${time}`;
+      resultInterest = deposited * Math.pow((1 + r), t);
+      latexEquation = `$$${deposited} (1 + ${r})^{${t}}$$`;
     }
 
+    // Update the result value
     result.innerHTML = "$" + resultInterest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    equation.innerHTML = resultEquation;
+    
+    // Update the equation text with LaTeX string
+    equation.innerHTML = latexEquation;
+
+    // Tell MathJax to re-render the new LaTeX content
+    MathJax.typeset();
   });
 </script>
 
